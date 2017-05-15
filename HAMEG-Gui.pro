@@ -5,12 +5,13 @@ TEMPLATE = app
 QT += core gui charts
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-#CONFIG += console
+CONFIG += console
 
 HEADERS += \
     lcrmeasure.h \
-    hameg_consts.h
+    hameg_consts.h \
+    serial_communication.h
 
 SOURCES += \
-    hameggui.cpp \
-    lcrmeasure.cpp
+    lcrmeasure.cpp \
+    Application.cpp

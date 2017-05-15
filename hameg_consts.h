@@ -23,13 +23,58 @@ static QMap<QString, QString> _init_commands() {
     QMap<QString, QString> comms;
 
     comms["Identification"] = "*IDN?"; // HAMEG Instruments,<instrument type>,<serial number>,<firmware>
+
     comms["Reset"] = "*RST";
+
     comms["Operation Complete"] = "*OPC?"; // Returns 1 when all measurements successfully completed
     comms["Sync Wait Completing"] = "*WAI"; // STRT -> *WAI -> XALL?  - start meas and wait compl and send the results
+
     comms["Save Conf to Memory"] = "*SAV %i"; // %i between 0 and 9
     comms["Load Conf from Memory"] = "*RCL %i";
+
     comms["Lock Panel"] = "LOCK 1";
     comms["Unlock Panel"] = "LOCK 0";
+
+    comms["Set Trigger Delay"] = "$STL %i";
+    comms["Get Trigger Delay"] = "$STL?";
+
+    comms["Calculation of Average"] = "AVGM %i"; // i=0 -> NONE; i=2 -> MED (medium); i=1 -> manual (NAVG)
+    comms["Get Calc of Averaging"] = "AVGM?";
+    comms["Set N Averaging"] = "NAVG %i"; // between 2 and 99
+    comms["Get N Averaging"] = "NAVG?";
+
+    comms["Set DC Bias Voltage"] = "VBIA(?){%x}"; // between 0V and 5V; only for C-D, C-R, R-X or Z-O
+    comms["Get DC Bias Voltage"] = "VBIA?";
+
+    comms["Set DC Bias Current"] = "IBIA(?){%x}"; // between 1mA and 200mA; only for L-Q, L-R, N-O or M
+    comms["Get DC Bias Current"] = "IBIA?";
+
+    comms[""] = "BIAS %i";
+    comms[""] = "BIAS?";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
+    comms[""] = "";
     comms[""] = "";
     comms[""] = "";
     comms[""] = "";
