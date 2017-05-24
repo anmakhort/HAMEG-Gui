@@ -67,10 +67,7 @@ int set_blocking_mode(int fd, int block=0) {
 
 int serial_init(const char* device) {
     int fd = open(device, O_RDWR | O_NOCTTY | O_SYNC);
-    if (fd < 0) {
-        std::cout << "Error opening device\n";
-        return -1;
-    }
+    if (fd < 0) return -1;
     if (set_iface_attribs(fd, B9600, 0) < 0) {
         std::cout << "Error setting attributes\n";
         return -1;
