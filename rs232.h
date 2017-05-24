@@ -1,19 +1,21 @@
-#ifndef SERIAL_COMMUNICATION_H
-#define SERIAL_COMMUNICATION_H
-
+#ifndef RS232_H
+#define RS232_H
 
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
+#include <iostream>
+#include <string>
 
+#define BUFF_SIZE 256
 
 int set_iface_attribs(int fd, int speed, int parity) {
     struct termios device;
     memset (&device, 0, sizeof device);
     if (tcgetattr (fd, &device) != 0) {
-        //error_message ("error %d from tcgetattr", errno);
+        std::cout << "error " << errno << " from tcgetattr\n";
         return -1;
     }
 
@@ -39,7 +41,7 @@ int set_iface_attribs(int fd, int speed, int parity) {
     device.c_cflag &= ~CRTSCTS;
 
     if (tcsetattr (fd, TCSANOW, &device) != 0) {
-        //error_message ("error %d from tcsetattr", errno);
+        std::cout << "error " << errno << " from tcsetattr\n";
         return -1;
     }
     return 0;
@@ -49,18 +51,59 @@ int set_blocking_mode(int fd, int block=0) {
     struct termios device;
     memset (&device, 0, sizeof device);
     if (tcgetattr (fd, &device) != 0) {
-        //error_message ("error %d from tggetattr", errno);
+        std::cout << "error " << errno << " from tggetattr\n";
         return -1;
     }
 
     device.c_cc[VMIN]  = block ? 1 : 0;
     device.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
 
-    if (tcsetattr (fd, TCSANOW, &device) != 0)
-        //error_message ("error %d setting term attributes", errno);
+    if (tcsetattr (fd, TCSANOW, &device) != 0) {
+        std::cout << "error " << errno << " setting term attributes\n";
         return -1;
+    }
     return 0;
 }
 
+int serial_init(const char* device) {
+    int fd = open(device, O_RDWR | O_NOCTTY | O_SYNC);
+    if (fd < 0) {
+        std::cout << "Error opening device\n";
+        return -1;
+    }
+    if (set_iface_attribs(fd, B9600, 0) < 0) {
+        std::cout << "Error setting attributes\n";
+        return -1;
+    }
+    if (set_blocking_mode(fd, 1) < 0) {
+        std::cout << "Error setting mode\n";
+    }
+    return fd;
+}
 
-#endif // SERIAL_COMMUNICATION_H
+int serial_close(const int &fd) {
+    if (fd) return close(fd);
+    else return -1;
+}
+
+int serial_write(const int &fd, std::string message, const char *ending, int wait_us) {
+    message.append(ending);
+    int written = (int)write(fd, message.c_str(), (int)message.size());
+    usleep(100*message.size() + wait_us);
+    return written;
+}
+
+std::string serial_read(const int &fd) {
+    char buff[BUFF_SIZE];
+    int n_read = (int)read(fd, buff, BUFF_SIZE);
+    if (n_read <= 0) return "";
+    else return std::string(buff);
+}
+
+std::string serial_query(const int &fd, std::string message, const char *ending, int resp_size) {
+    int status = serial_write(fd, message, ending, 100*resp_size);
+    if (status > 0) return serial_read(fd);
+    else return "";
+}
+
+#endif // RS232_H
