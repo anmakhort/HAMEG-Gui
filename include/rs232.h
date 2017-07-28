@@ -54,10 +54,8 @@ int set_blocking_mode(int fd, int block=0) {
         std::cout << "error " << errno << " from tggetattr\n";
         return -1;
     }
-
     device.c_cc[VMIN]  = block ? 1 : 0;
     device.c_cc[VTIME] = 5;            // 0.5 seconds read timeout
-
     if (tcsetattr (fd, TCSANOW, &device) != 0) {
         std::cout << "error " << errno << " setting term attributes\n";
         return -1;
@@ -72,7 +70,10 @@ int serial_init(const char* device) {
         std::cout << "Error setting attributes\n";
         return -1;
     }
-    if (set_blocking_mode(fd, 1) < 0) {
+    // Set non-blocking mode, this will protect us from
+    // unauthorized readings (if there was no query prev):
+    // in this case read(...) will return empty string.
+    if (set_blocking_mode(fd, 0) < 0) {
         std::cout << "Error setting mode\n";
     }
     return fd;
@@ -83,7 +84,7 @@ int serial_close(const int &fd) {
     else return -1;
 }
 
-int serial_write(const int &fd, std::string message, const char *ending, int wait_us) {
+int serial_write(const int &fd, std::string message, const char *ending, int wait_us = 0) {
     message.append(ending);
     int written = (int)write(fd, message.c_str(), (int)message.size());
     usleep(100*message.size() + wait_us);
@@ -92,8 +93,16 @@ int serial_write(const int &fd, std::string message, const char *ending, int wai
 
 std::string serial_read(const int &fd) {
     char buff[BUFF_SIZE];
-    int n_read = (int)read(fd, buff, BUFF_SIZE);
-    if (n_read <= 0) return "";
+    // Need such type of reading because there was some problems
+    // while reading responses from HAMEG LCR Meter, which seems to
+    // cut strings (give partial responses) after each reading try.
+    // This method will read ALL possible response.
+    size_t offset = 0, n_read = 0;
+    while ((n_read = read(fd, buff+offset, BUFF_SIZE-offset)) > 0) {
+        offset += n_read;
+        if (offset >= BUFF_SIZE) break;
+    }
+    if (offset == 0) return "";
     else return std::string(buff);
 }
 
