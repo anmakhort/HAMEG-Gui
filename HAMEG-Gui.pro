@@ -8,16 +8,16 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += console
 
 HEADERS += \
-    hameg_consts.h \
-    rs232.h \
-    settings.h \
-    serialconsole.h \
-    measurewnd.h \
-    LCRGui.h
+    include/rs232.h \
+    include/settings.h \
+    include/serialconsole.h \
+    include/measurewnd.h \
+    include/LCRGui.h \
+    include/hameg_consts.h \
 
 SOURCES += \
-    Application.cpp \
-    settings.cpp \
-    serialconsole.cpp \
-    measurewnd.cpp \
-    LCRGui.cpp
+    src/Application.cpp \
+    src/settings.cpp \
+    src/serialconsole.cpp \
+    src/measurewnd.cpp \
+    src/LCRGui.cpp

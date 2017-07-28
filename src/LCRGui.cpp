@@ -1,4 +1,4 @@
-#include "LCRGui.h"
+#include "../include/LCRGui.h"
 #include <QMessageBox>
 #include <iostream>
 

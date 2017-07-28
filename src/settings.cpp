@@ -1,4 +1,4 @@
-#include "settings.h"
+#include "../include/settings.h"
 
 Settings::Settings(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_DeleteOnClose);

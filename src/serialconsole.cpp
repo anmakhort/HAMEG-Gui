@@ -1,5 +1,5 @@
-#include "serialconsole.h"
-#include "rs232.h"
+#include "../include/serialconsole.h"
+#include "../include/rs232.h"
 
 SerialConsole::SerialConsole(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_DeleteOnClose);

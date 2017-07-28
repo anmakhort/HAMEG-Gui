@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <iostream>
-#include "LCRGui.h"
+#include "../include/LCRGui.h"
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);

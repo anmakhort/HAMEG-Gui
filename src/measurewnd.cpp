@@ -1,4 +1,4 @@
-#include "measurewnd.h"
+#include "../include/measurewnd.h"
 #include <QPushButton>
 
 MeasureWnd::MeasureWnd(QWidget *parent) : QWidget(parent) {
