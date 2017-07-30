@@ -11,11 +11,13 @@
 #include <QPushButton>
 #include <QFileDialog>
 
+#include "manager.h"
+
 class MeasureWnd : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MeasureWnd(QWidget *parent = 0);
+    explicit MeasureWnd(QWidget *parent = 0, Manager *manager = 0);
     ~MeasureWnd();
 
     void closeEvent(QCloseEvent *event) override;
@@ -23,13 +25,18 @@ public:
 signals:
     void s_closing(QObject*);
 
-public slots:
+private slots:
     void handle_btn_start();
+    void handle_btn_stop();
+    void handle_manager_exit();
 
 private:
-    QWidget *m_parent;
-    QFile *m_file;
-    QTextStream *m_stream;
+    Manager *m_manager = NULL;
+    QWidget *m_parent = NULL;
+    QFile *m_file = NULL;
+    QTextStream *m_stream = NULL;
+    QPushButton *btn_start = NULL;
+    QPushButton *btn_stop = NULL;
 };
 
 #endif // MEASUREWND_H

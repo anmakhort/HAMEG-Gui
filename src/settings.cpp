@@ -1,6 +1,6 @@
 #include "../include/settings.h"
 
-Settings::Settings(QWidget *parent) : QWidget(parent) {
+Settings::Settings(QWidget *parent, Manager *manager) : QWidget(parent), m_manager(manager) {
     setAttribute(Qt::WA_DeleteOnClose);
     setObjectName("SettingsWnd");
 
@@ -10,7 +10,6 @@ Settings::Settings(QWidget *parent) : QWidget(parent) {
 }
 
 Settings::~Settings() {
-
 }
 
 void Settings::closeEvent(QCloseEvent *event) {

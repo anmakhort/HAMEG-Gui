@@ -11,6 +11,7 @@
 #include "serialconsole.h"
 #include "measurewnd.h"
 #include "settings.h"
+#include "manager.h"
 
 class LCRGui : public QMainWindow
 {
@@ -20,24 +21,26 @@ public:
     ~LCRGui();
 
 private:
-    QMdiArea *mdi_area;
+    Manager *manager = NULL;
 
-    QMenu *fileMenu;
-    QMenu *viewMenu;
-    QMenu *settingsMenu;
-    QMenu *helpMenu;
+    QMdiArea *mdi_area = NULL;
 
-    QAction *loadAct;
-    QAction *saveAct;
-    QAction *exitAct;
+    QMenu *fileMenu = NULL;
+    QMenu *viewMenu = NULL;
+    QMenu *settingsMenu = NULL;
+    QMenu *helpMenu = NULL;
 
-    QAction *consoleViewAct;
-    QAction *measureViewAct;
+    QAction *loadAct = NULL;
+    QAction *saveAct = NULL;
+    QAction *exitAct = NULL;
 
-    QAction *settingsAct;
+    QAction *consoleViewAct = NULL;
+    QAction *measureViewAct = NULL;
 
-    QAction *aboutAct;
-    QAction *aboutQtAct;
+    QAction *settingsAct = NULL;
+
+    QAction *aboutAct = NULL;
+    QAction *aboutQtAct = NULL;
 
     void createMenus();
     void createConsoleWnd();

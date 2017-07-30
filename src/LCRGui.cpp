@@ -12,17 +12,32 @@ LCRGui::LCRGui(QWidget *parent) : QMainWindow(parent), mdi_area(new QMdiArea) {
     mdi_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdi_area);
 
-    createSettingsWnd();
-    createConsoleWnd();
-    createMeasureWnd();
+    //createSettingsWnd();
+    //createConsoleWnd();
+    //createMeasureWnd();
 
     setWindowTitle("HAMEG <LCR> Gui");
     setMinimumSize(300, 300);
     resize(400, 400);
+
+    manager = new Manager();
 }
 
 LCRGui::~LCRGui() {
-
+    delete manager;/*
+    delete mdi_area;
+    delete fileMenu;
+    delete viewMenu;
+    delete settingsMenu;
+    delete helpMenu;
+    delete loadAct;
+    delete saveAct;
+    delete exitAct;
+    delete consoleViewAct;
+    delete measureViewAct;
+    delete settingsAct;
+    delete aboutAct;
+    delete aboutQtAct;*/
 }
 
 void LCRGui::closeEvent(QCloseEvent *event) {
@@ -93,6 +108,7 @@ void LCRGui::handle_menu_saveConfig(bool) {
 }
 
 void LCRGui::handle_menu_exit(bool) {
+    //emit manager->s_exit();
     this->close();
 }
 
@@ -137,7 +153,7 @@ void LCRGui::handle_menu_measureView(bool) {
 }
 
 void LCRGui::createConsoleWnd() {
-    SerialConsole *serialWnd = new SerialConsole(this);
+    SerialConsole *serialWnd = new SerialConsole(this, manager);
     serialWnd->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mdi_area->addSubWindow(serialWnd);
     mdi_area->subWindowList()[mdi_area->subWindowList().size()-1]->setObjectName(serialWnd->objectName());
@@ -146,7 +162,7 @@ void LCRGui::createConsoleWnd() {
 }
 
 void LCRGui::createMeasureWnd() {
-    MeasureWnd *measureWnd = new MeasureWnd(this);
+    MeasureWnd *measureWnd = new MeasureWnd(this, manager);
     measureWnd->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mdi_area->addSubWindow(measureWnd);
     mdi_area->subWindowList()[mdi_area->subWindowList().size()-1]->setObjectName(measureWnd->objectName());
@@ -155,7 +171,7 @@ void LCRGui::createMeasureWnd() {
 }
 
 void LCRGui::createSettingsWnd() {
-    Settings *settingsWnd = new Settings(this);
+    Settings *settingsWnd = new Settings(this, manager);
     settingsWnd->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mdi_area->addSubWindow(settingsWnd);
     mdi_area->subWindowList()[mdi_area->subWindowList().size()-1]->setObjectName(settingsWnd->objectName());

@@ -9,24 +9,27 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 
+#include "manager.h"
+
 class SerialConsole : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SerialConsole(QWidget *parent = 0);
+    explicit SerialConsole(QWidget *parent = 0, Manager *manager = 0);
     ~SerialConsole();
 
 private:
-    int _fd = -1;
-    QLabel *m_lbl;
-    QLineEdit *m_device;
-    QLineEdit *m_command;
-    QLineEdit *m_resp;
-    QPushButton *m_btnConnect;
-    QPushButton *m_btnSend;
-    QPushButton *m_btnQuery;
-    QPushButton *m_btnRead;
-    QTextEdit *m_log;
+    Manager *m_manager;
+
+    QLabel *m_lbl = NULL;
+    QLineEdit *m_device = NULL;
+    QLineEdit *m_command = NULL;
+    QLineEdit *m_resp = NULL;
+    QPushButton *m_btnConnect = NULL;
+    QPushButton *m_btnSend = NULL;
+    QPushButton *m_btnQuery = NULL;
+    QPushButton *m_btnRead = NULL;
+    QTextEdit *m_log = NULL;
 
     void closeEvent(QCloseEvent *event) override;
 
