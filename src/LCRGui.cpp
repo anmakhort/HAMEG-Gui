@@ -1,5 +1,7 @@
 #include "../include/LCRGui.h"
+#include "../include/serializer.h"
 #include <QMessageBox>
+
 #include <iostream>
 
 LCRGui::LCRGui(QWidget *parent) : QMainWindow(parent), mdi_area(new QMdiArea) {
@@ -24,20 +26,7 @@ LCRGui::LCRGui(QWidget *parent) : QMainWindow(parent), mdi_area(new QMdiArea) {
 }
 
 LCRGui::~LCRGui() {
-    delete manager;/*
-    delete mdi_area;
-    delete fileMenu;
-    delete viewMenu;
-    delete settingsMenu;
-    delete helpMenu;
-    delete loadAct;
-    delete saveAct;
-    delete exitAct;
-    delete consoleViewAct;
-    delete measureViewAct;
-    delete settingsAct;
-    delete aboutAct;
-    delete aboutQtAct;*/
+    delete manager;
 }
 
 void LCRGui::closeEvent(QCloseEvent *event) {
@@ -104,7 +93,9 @@ void LCRGui::handle_menu_loadConfig(bool) {
 }
 
 void LCRGui::handle_menu_saveConfig(bool) {
-
+    Serializer::serialize(\
+                manager->get_all_settings(), \
+                Serializer::datetime_path("./configurations"));
 }
 
 void LCRGui::handle_menu_exit(bool) {

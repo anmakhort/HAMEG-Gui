@@ -2,16 +2,24 @@
 #define SERIALIZER_H
 
 #include <QObject>
+#include <QString>
+#include <QChar>
+#include <QMap>
 
-class Serializer : public QObject
-{
-    Q_OBJECT
+class Serializer {
 public:
-    explicit Serializer(QObject *parent = 0);
+    static const QString VERSION;
+    static const QString DEFAULT_PATH;
+    static const QString DEFALT_BASEDIR;
 
-signals:
+    static const QString datetime_path(const QString basedir);
 
-public slots:
+    static void serialize(const QMap<QString,QString> * const map, const QString path);
+    static QMap<QString,QString>* deserialize(const QString path);
+
+private:
+    static const QChar COMMENT_CHAR;
+    static const QString SEPARATOR;
 };
 
 #endif // SERIALIZER_H
