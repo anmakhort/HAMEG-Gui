@@ -14,7 +14,7 @@ public:
     Manager(const Manager&);
     ~Manager();
 
-    const int get_fd() const { return _fd; }
+    int get_fd() { return _fd; }
     void set_fd(const int fd) { _fd = fd; }
 
     const QString get_device_path() const { return device_path; }
@@ -24,6 +24,9 @@ public:
     void set_setting(const QString key, const QString value);
 
     const QMap<QString,QString>* get_all_settings() const { return m_map_settings; }
+    void update_all_settings(const QMap<QString,QString> * const map);
+
+    QString ask(QString query, int sz);
 
 signals:
     void s_meas_start();

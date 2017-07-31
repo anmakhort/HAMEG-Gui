@@ -1,7 +1,7 @@
 #include "../include/serialconsole.h"
 #include "../include/rs232.h"
 
-SerialConsole::SerialConsole(QWidget *parent, Manager *manager) : QWidget(parent), m_manager(manager) {
+SerialConsole::SerialConsole(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_DeleteOnClose);
     setObjectName("SerialConsole");
 
@@ -59,22 +59,9 @@ void SerialConsole::closeEvent(QCloseEvent *event) {
 }
 
 void SerialConsole::handle_btnConnect() {
-    QString dev = m_device->text();
+    _fd = serial_init(m_device->text().toStdString().c_str());
 
-    if (m_manager->get_device_path() != dev) {
-        m_log->append("Closing old connection to device: " + m_manager->get_device_path() + \
-                      "and opening for: " + dev);
-        serial_close(m_manager->get_fd());
-        m_manager->set_fd(-1);
-        m_manager->set_device_path(dev);
-    }
-
-    if (m_manager->get_fd() <= 0) {
-        int fd = serial_init(dev.toStdString().c_str());
-        m_manager->set_fd(fd);
-    }
-
-    if (m_manager->get_fd() < 0) {
+    if (_fd < 0) {
         m_log->append("Error opening device!");
     } else {
         m_btnConnect->setEnabled(false);
@@ -89,17 +76,17 @@ void SerialConsole::handle_btnConnect() {
 void SerialConsole::handle_btnSend() {
     m_log->append("Sending <" + m_command->text() + \
                   tr("> : ") + \
-                  (serial_write(m_manager->get_fd(), m_command->text().toStdString(), \
+                  (serial_write(_fd, m_command->text().toStdString(), \
                                 "\r", 5000) == 0 ? "FALSE" : "TRUE"));
 }
 
 void SerialConsole::handle_btnRead() {
-    m_log->append("Read: " + QString::fromStdString(serial_read(m_manager->get_fd())));
+    m_log->append("Read: " + QString::fromStdString(serial_read(_fd)));
 }
 
 void SerialConsole::handle_btnQuery() {
     m_log->append("Query <" + m_command->text() + "> : " + \
                   QString::fromStdString(\
-                      serial_query(m_manager->get_fd(), \
+                      serial_query(_fd, \
                                    m_command->text().toStdString(), "\r", 256)));
 }

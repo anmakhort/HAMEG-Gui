@@ -3,20 +3,25 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include "manager.h"
 
 class BtnPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BtnPanel(QWidget *parent = 0);
+    explicit BtnPanel(QWidget *parent = 0, Manager *manager = NULL);
 
 signals:
     void s_btn_apply_pressed();
     void s_btn_reset_pressed();
 
-public slots:
+private slots:
+    void handle_apply();
+    void handle_reset();
 
 private:
+    Manager *m_manager = NULL;
+
     QPushButton *m_btnApply = NULL;
     QPushButton *m_btnFactoryReset = NULL;
 

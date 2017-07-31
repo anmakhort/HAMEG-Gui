@@ -9,17 +9,15 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 
-#include "manager.h"
-
 class SerialConsole : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SerialConsole(QWidget *parent = 0, Manager *manager = 0);
+    explicit SerialConsole(QWidget *parent = 0);
     ~SerialConsole();
 
 private:
-    Manager *m_manager;
+    int _fd = -1;
 
     QLabel *m_lbl = NULL;
     QLineEdit *m_device = NULL;

@@ -33,7 +33,10 @@ private:
 signals:
     void s_closing(QObject*);
 
-public slots:
+private slots:
+    void handle_apply_pressed();
+    void handle_reset_pressed();
+
 };
 
 #endif // SETTINGS_H

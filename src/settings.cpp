@@ -5,13 +5,13 @@ Settings::Settings(QWidget *parent, Manager *manager) : QWidget(parent), m_manag
     setAttribute(Qt::WA_DeleteOnClose);
     setObjectName("SettingsWnd");
 
-    setGeometry(300, 0, 300, 300);
-    setFixedSize(300, 300);
+    setGeometry(300, 0, 630, 300);
+    setFixedSize(630, 300);
     setWindowTitle("Measurement Settings");
 
-    m_freqpanel = new FreqPanel(this);
-    m_btnpanel = new BtnPanel(this);
-    m_adtpanel = new AdtPanel(this);
+    m_freqpanel = new FreqPanel(this, manager);
+    m_btnpanel = new BtnPanel(this, manager);
+    m_adtpanel = new AdtPanel(this, manager);
 
     QGridLayout *layout = new QGridLayout();
     this->setLayout(layout);
@@ -20,17 +20,8 @@ Settings::Settings(QWidget *parent, Manager *manager) : QWidget(parent), m_manag
     layout->addWidget(m_freqpanel, 0, 1, 1, 1);
     layout->addWidget(m_btnpanel, 1, 1, 1, 1);
 
-    m_manager->set_setting(tr("PMOD"), tr("0"));
-
-    /*
-    QVBoxLayout *vlayout = new QVBoxLayout();
-    vlayout->addWidget(m_freqpanel);
-    vlayout->addWidget(m_btnpanel);
-
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->addWidget(m_adtpanel);
-    hlayout->addLayout(vlayout);
-    */
+    connect(m_btnpanel, SIGNAL(s_btn_apply_pressed()), this, SLOT(handle_apply_pressed()));
+    connect(m_btnpanel, SIGNAL(s_btn_reset_pressed()), this, SLOT(handle_reset_pressed()));
 }
 
 Settings::~Settings() {
@@ -39,4 +30,12 @@ Settings::~Settings() {
 void Settings::closeEvent(QCloseEvent *event) {
     emit s_closing(this);
     event->accept();
+}
+
+void Settings::handle_apply_pressed() {
+    \
+}
+
+void Settings::handle_reset_pressed() {
+    \
 }

@@ -13,7 +13,6 @@ HEADERS += \
     include/serialconsole.h \
     include/measurewnd.h \
     include/LCRGui.h \
-    include/hameg_consts.h \
     include/manager.h \
     include/freqpanel.h \
     include/btnpanel.h \

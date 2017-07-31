@@ -2,7 +2,9 @@
 #include "../include/serializer.h"
 #include <QMessageBox>
 
+#ifdef _DEBUG
 #include <iostream>
+#endif
 
 LCRGui::LCRGui(QWidget *parent) : QMainWindow(parent), mdi_area(new QMdiArea) {
     setObjectName("LCRGui");
@@ -20,7 +22,7 @@ LCRGui::LCRGui(QWidget *parent) : QMainWindow(parent), mdi_area(new QMdiArea) {
 
     setWindowTitle("HAMEG <LCR> Gui");
     setMinimumSize(300, 300);
-    resize(400, 400);
+    resize(650, 500);
 
     manager = new Manager();
 }
@@ -89,7 +91,13 @@ void LCRGui::createMenus() {
 }
 
 void LCRGui::handle_menu_loadConfig(bool) {
-
+    QMap<QString,QString> *tmp = \
+            Serializer::deserialize(\
+                Serializer::datetime_path("./configurations"));
+    if (NULL != tmp) {
+        manager->update_all_settings(tmp);
+        delete tmp;
+    }
 }
 
 void LCRGui::handle_menu_saveConfig(bool) {
@@ -144,7 +152,7 @@ void LCRGui::handle_menu_measureView(bool) {
 }
 
 void LCRGui::createConsoleWnd() {
-    SerialConsole *serialWnd = new SerialConsole(this, manager);
+    SerialConsole *serialWnd = new SerialConsole(this);
     serialWnd->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mdi_area->addSubWindow(serialWnd);
     mdi_area->subWindowList()[mdi_area->subWindowList().size()-1]->setObjectName(serialWnd->objectName());
@@ -172,13 +180,19 @@ void LCRGui::createSettingsWnd() {
 
 void LCRGui::destroyActions(QObject *obj) {
     if (obj) {
+#ifdef _DEBUG
         std::cout << "destroy:\t" << obj->objectName().toStdString() << "\t";
+#endif
         QList<QMdiSubWindow*> lst = mdi_area->subWindowList();
         for (int i = 0; i < lst.size(); i++) {
             if (lst[i]->objectName() == obj->objectName()) {
+#ifdef _DEBUG
                 std::cout << i;
+#endif
             }
         }
+#ifdef _DEBUG
         std::cout << "\n";
+#endif
     }
 }
