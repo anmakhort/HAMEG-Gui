@@ -21,6 +21,12 @@ BtnPanel::BtnPanel(QWidget *parent, Manager *manager) : QWidget(parent), m_manag
 void BtnPanel::handle_apply() {
     if (NULL == m_manager) return;
 
+    if (m_manager->get_fd() < 0) {
+        int fd = serial_init(DEFAULT_HAMEG_SYS_PATH);
+        if (fd < 0) return;
+        m_manager->set_fd(fd);
+    }
+
     const QMap<QString,QString> *cfg = m_manager->get_all_settings();
 
     if (NULL == cfg || cfg->size() == 0) return;

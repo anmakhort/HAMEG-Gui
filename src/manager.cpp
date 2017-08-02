@@ -1,8 +1,8 @@
 #include "../include/manager.h"
 
-Manager::Manager() {}
+Manager::Manager() : QObject(NULL) {}
 
-Manager::Manager(const Manager &manager) {
+Manager::Manager(const Manager &manager) : QObject(NULL) {
     this->_fd = manager._fd;
     this->device_path = manager.device_path;
 }
@@ -10,6 +10,14 @@ Manager::Manager(const Manager &manager) {
 Manager::~Manager() {
     if (_fd > 0) serial_close(_fd);
     if (m_map_settings != NULL) delete m_map_settings;
+}
+
+void Manager::manage_fd() {
+    if (_fd < 0) {
+        if (NULL == device_path)
+            device_path = DEFAULT_HAMEG_SYS_PATH;
+        _fd = serial_init(device_path.toStdString().c_str());
+    }
 }
 
 const QString Manager::get_setting(QString key) const {
@@ -34,6 +42,7 @@ void Manager::update_all_settings(const QMap<QString,QString> * const map) {
 }
 
 QString Manager::ask(QString query, int sz) {
+    manage_fd();
     QString ret = QString::fromStdString(\
                 serial_query(_fd, query.toStdString(), "\r\n", sz));
     ret.resize(sz);

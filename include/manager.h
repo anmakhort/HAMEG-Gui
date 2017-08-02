@@ -6,6 +6,8 @@
 #include <QMap>
 #include "rs232.h"
 
+#define DEFAULT_HAMEG_SYS_PATH "/dev/serial/by-id/usb-HAMEG_Instruments_HO820_019641048-if00-port0"
+
 class Manager : public QObject
 {
     Q_OBJECT
@@ -40,6 +42,8 @@ private:
     int _fd = -1;
     QString device_path;
     QMap<QString, QString> *m_map_settings = NULL;
+
+    void manage_fd();
 
 };
 

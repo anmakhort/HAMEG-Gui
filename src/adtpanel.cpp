@@ -178,17 +178,6 @@ void AdtPanel::handle_outp_changed(int) {
 void AdtPanel::ask_hameg_settings() {
     if (NULL == m_manager) return;
 
-    if (m_manager->get_device_path().isEmpty()) \
-        m_manager->set_device_path("/dev/serial/by-id/usb-HAMEG_Instruments_HO820_019641048-if00-port0");
-
-    if (m_manager->get_fd() <= 0) {
-        int fd = serial_init(\
-                    m_manager->get_device_path().toStdString().c_str());
-
-        if (fd <= 0) return;
-        else m_manager->set_fd(fd);
-    }
-
     QString avgm = m_manager->ask("AVGM?",1);
     m_combo_avgm->setCurrentIndex(m_combo_avgm->findData(avgm));
 

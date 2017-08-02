@@ -1,4 +1,5 @@
 #include "../include/settings.h"
+#include "../include/serializer.h"
 #include <QGridLayout>
 
 Settings::Settings(QWidget *parent, Manager *manager, bool load_config) : QWidget(parent), m_manager(manager) {
@@ -8,6 +9,15 @@ Settings::Settings(QWidget *parent, Manager *manager, bool load_config) : QWidge
     setGeometry(300, 0, 630, 325);
     setFixedSize(630, 325);
     setWindowTitle("Measurement Settings");
+
+    if (manager->get_fd() < 0) {
+        QMap<QString,QString> *tmp = Serializer::deserialize("./default.conf");
+        if (NULL != tmp) {
+            manager->update_all_settings(tmp);
+            delete tmp;
+            load_config = true;
+        }
+    }
 
     m_freqpanel = new FreqPanel(this, manager, load_config);
     m_btnpanel = new BtnPanel(this, manager);
