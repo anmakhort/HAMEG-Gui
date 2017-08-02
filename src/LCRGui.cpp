@@ -16,10 +16,6 @@ LCRGui::LCRGui(QWidget *parent) : QMainWindow(parent), mdi_area(new QMdiArea) {
     mdi_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdi_area);
 
-    //createSettingsWnd();
-    //createConsoleWnd();
-    //createMeasureWnd();
-
     setWindowTitle("HAMEG <LCR> Gui");
     setMinimumSize(300, 300);
     resize(650, 500);
@@ -45,7 +41,6 @@ void LCRGui::createMenus() {
     saveAct = new QAction(tr("Save config"), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save current configuration"));
-    connect(saveAct, SIGNAL(triggered(bool)), this, SLOT(handle_menu_saveConfig(bool)));
 
     exitAct = new QAction(tr("Exit"), this);
     exitAct->setShortcuts(QKeySequence::Close);
@@ -91,19 +86,38 @@ void LCRGui::createMenus() {
 }
 
 void LCRGui::handle_menu_loadConfig(bool) {
-    QMap<QString,QString> *tmp = \
-            Serializer::deserialize(\
-                Serializer::datetime_path("./configurations"));
+    QString path = \
+            QFileDialog::getOpenFileName(this, \
+                                         tr("Select config to load"), \
+                                         tr("./configs"), \
+                                         tr("Config (*.conf)"));
+    if (path.isEmpty()) return;
+
+    QMap<QString,QString> *tmp = Serializer::deserialize(path);
     if (NULL != tmp) {
         manager->update_all_settings(tmp);
         delete tmp;
     }
+    QList<QMdiSubWindow*> lst = mdi_area->subWindowList();
+    for (int i = 0; i < lst.size(); i++) {
+        if (lst[i]->objectName() == "SettingsWnd") {
+            lst[i]->close();
+            lst.removeAt(i);
+            break;
+        }
+    }
+    createSettingsWnd(true);
 }
 
 void LCRGui::handle_menu_saveConfig(bool) {
-    Serializer::serialize(\
-                manager->get_all_settings(), \
-                Serializer::datetime_path("./configurations"));
+    QString path = \
+            QFileDialog::getSaveFileName(this, \
+                                         tr("Save current config as"), \
+                                         tr("./configs"), \
+                                         tr("Config (*.conf)"));
+    if (path.isEmpty()) return;
+
+    Serializer::serialize(manager->get_all_settings(), path);
 }
 
 void LCRGui::handle_menu_exit(bool) {
@@ -118,7 +132,7 @@ void LCRGui::handle_menu_settings(bool) {
             return;
         }
     }
-    createSettingsWnd();
+    createSettingsWnd(false);
 }
 
 void LCRGui::handle_menu_about(bool) {
@@ -169,12 +183,14 @@ void LCRGui::createMeasureWnd() {
     measureWnd->show();
 }
 
-void LCRGui::createSettingsWnd() {
-    Settings *settingsWnd = new Settings(this, manager);
+void LCRGui::createSettingsWnd(bool load_config) {
+    Settings *settingsWnd = new Settings(this, manager, load_config);
     settingsWnd->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mdi_area->addSubWindow(settingsWnd);
     mdi_area->subWindowList()[mdi_area->subWindowList().size()-1]->setObjectName(settingsWnd->objectName());
     connect(settingsWnd, SIGNAL(s_closing(QObject*)), this, SLOT(destroyActions(QObject*)));
+    connect(saveAct, SIGNAL(triggered(bool)), settingsWnd, SLOT(handle_save_config(bool)));
+    connect(settingsWnd, SIGNAL(s_saved(bool)), this, SLOT(handle_menu_saveConfig(bool)));
     settingsWnd->show();
 }
 

@@ -2,7 +2,7 @@
 
 #define THETA QString(1,QChar(0x98,0x03))
 
-AdtPanel::AdtPanel(QWidget *parent, Manager *manager) : QWidget(parent), m_manager(manager)
+AdtPanel::AdtPanel(QWidget *parent, Manager *manager, bool load_conf) : QWidget(parent), m_manager(manager)
 {
     setGeometry(0, 0, 300, 500);
     setFixedSize(300, 300);
@@ -105,10 +105,32 @@ AdtPanel::AdtPanel(QWidget *parent, Manager *manager) : QWidget(parent), m_manag
     connect(m_combo_rate, SIGNAL(currentIndexChanged(int)), this, SLOT(handle_rate_changed(int)));
     connect(m_combo_pmod, SIGNAL(currentIndexChanged(int)), this, SLOT(handle_pmod_changed(int)));
     connect(m_combo_outp, SIGNAL(currentIndexChanged(int)), this, SLOT(handle_outp_changed(int)));
+    connect(m_edit_navg, SIGNAL(textChanged(QString)), this, SLOT(handle_navg_changed(QString)));
+    connect(m_edit_vbia, SIGNAL(textChanged(QString)), this, SLOT(handle_vbia_changed(QString)));
+    connect(m_edit_ibia, SIGNAL(textChanged(QString)), this, SLOT(handle_ibia_changed(QString)));
+    connect(m_edit_volt, SIGNAL(textChanged(QString)), this, SLOT(handle_volt_changed(QString)));
 
-    ask_hameg_settings();
+    if (load_conf) load_config();
+    else {
+        ask_hameg_settings();
+        save_config();
+    }
 
     this->show();
+}
+
+void AdtPanel::load_config() {
+    if (NULL == m_manager) return;
+    m_combo_lock->setCurrentText(m_manager->get_setting("LOCK"));
+    m_combo_avgm->setCurrentIndex(m_manager->get_setting("AVGM").toInt());
+    m_edit_navg->setText(m_manager->get_setting("NAVG"));
+    m_combo_bias->setCurrentIndex(m_manager->get_setting("BIAS").toInt());
+    m_edit_vbia->setText(m_manager->get_setting("VBIA"));
+    m_edit_ibia->setText(m_manager->get_setting("IBIA"));
+    m_edit_volt->setText(m_manager->get_setting("VOLT"));
+    m_combo_rate->setCurrentText(m_manager->get_setting("RATE"));
+    m_combo_pmod->setCurrentIndex(m_manager->get_setting("PMOD").toInt());
+    m_combo_outp->setCurrentIndex(m_manager->get_setting("OUTP").toInt());
 }
 
 void AdtPanel::handle_lock_changed(int idx) {
@@ -193,4 +215,38 @@ void AdtPanel::ask_hameg_settings() {
     m_combo_outp->setCurrentIndex(m_combo_outp->findData(m_manager->ask("OUTP?",1)));
 
     m_edit_volt->setText(m_manager->ask("VOLT?",4));
+}
+
+void AdtPanel::handle_navg_changed(QString) {
+    if (NULL == m_manager) return;
+    m_manager->set_setting("NAVG", m_edit_navg->text());
+}
+
+void AdtPanel::handle_vbia_changed(QString) {
+    if (NULL == m_manager) return;
+    m_manager->set_setting("VBIA", m_edit_vbia->text());
+}
+
+void AdtPanel::handle_ibia_changed(QString) {
+    if (NULL == m_manager) return;
+    m_manager->set_setting("IBIA", m_edit_ibia->text());
+}
+
+void AdtPanel::handle_volt_changed(QString txt) {
+    if (NULL == m_manager) return;
+    m_manager->set_setting("VOLT", txt);
+}
+
+void AdtPanel::save_config() {
+    if (NULL == m_manager) return;
+    m_manager->set_setting("LOCK", m_combo_lock->currentText());
+    m_manager->set_setting("AVGM", m_combo_avgm->currentData().toString());
+    m_manager->set_setting("NAVG", m_edit_navg->text());
+    m_manager->set_setting("BIAS", m_combo_bias->currentData().toString());
+    m_manager->set_setting("VBIA", m_edit_vbia->text());
+    m_manager->set_setting("IBIA", m_edit_ibia->text());
+    m_manager->set_setting("VOLT", m_edit_volt->text());
+    m_manager->set_setting("RATE", m_combo_rate->currentData().toString());
+    m_manager->set_setting("PMOD", m_combo_pmod->currentData().toString());
+    m_manager->set_setting("OUTP", m_combo_outp->currentData().toString());
 }

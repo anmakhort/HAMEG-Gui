@@ -1,17 +1,17 @@
 #include "../include/settings.h"
 #include <QGridLayout>
 
-Settings::Settings(QWidget *parent, Manager *manager) : QWidget(parent), m_manager(manager) {
+Settings::Settings(QWidget *parent, Manager *manager, bool load_config) : QWidget(parent), m_manager(manager) {
     setAttribute(Qt::WA_DeleteOnClose);
     setObjectName("SettingsWnd");
 
-    setGeometry(300, 0, 630, 300);
-    setFixedSize(630, 300);
+    setGeometry(300, 0, 630, 325);
+    setFixedSize(630, 325);
     setWindowTitle("Measurement Settings");
 
-    m_freqpanel = new FreqPanel(this, manager);
+    m_freqpanel = new FreqPanel(this, manager, load_config);
     m_btnpanel = new BtnPanel(this, manager);
-    m_adtpanel = new AdtPanel(this, manager);
+    m_adtpanel = new AdtPanel(this, manager, load_config);
 
     QGridLayout *layout = new QGridLayout();
     this->setLayout(layout);
@@ -37,5 +37,12 @@ void Settings::handle_apply_pressed() {
 }
 
 void Settings::handle_reset_pressed() {
-    \
+    m_freqpanel->update_base_freq();
+    m_adtpanel->ask_hameg_settings();
+}
+
+void Settings::handle_save_config(bool) {
+    if (NULL != m_adtpanel) m_adtpanel->save_config();
+    if (NULL != m_freqpanel) m_freqpanel->save_config();
+    emit s_saved(true);
 }

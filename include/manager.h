@@ -4,11 +4,12 @@
 #include <QObject>
 #include <QString>
 #include <QMap>
-
 #include "rs232.h"
 
-class Manager
+class Manager : public QObject
 {
+    Q_OBJECT
+
 public:
     Manager();
     Manager(const Manager&);
@@ -32,6 +33,8 @@ signals:
     void s_meas_start();
     void s_meas_end();
     void s_exit();
+    void s_busy();
+    void s_ok();
 
 private:
     int _fd = -1;

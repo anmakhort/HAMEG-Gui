@@ -8,6 +8,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QComboBox>
+
 #include "manager.h"
 
 
@@ -22,19 +24,29 @@ class FreqPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FreqPanel(QWidget *parent = 0, Manager *manager = NULL);
+    explicit FreqPanel(QWidget *parent = 0, Manager *manager = NULL, bool load_config = false);
     ~FreqPanel();
 
     QVector<QString>* get_selected_freqs();
+
+    void save_config();
+    void load_config();
+    void update_base_freq();
 
 signals:
 
 private slots:
     void handle_select_all();
     void handle_unselect_all();
+    void handle_base_freq_changed(int);
+    void handle_manager_busy();
+    void handle_manager_ok();
 
 private:
     Manager *m_manager = NULL;
+
+    QLabel *m_lbl_freq = NULL;
+    QComboBox *m_combo_freq = NULL;
 
     QVector<QCheckBox*> *m_checkboxes = NULL;
     QPushButton *m_btnSelectAll = NULL;

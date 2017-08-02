@@ -45,7 +45,7 @@ private:
     void createMenus();
     void createConsoleWnd();
     void createMeasureWnd();
-    void createSettingsWnd();
+    void createSettingsWnd(bool load_config);
 
     void closeEvent(QCloseEvent *event) override;
 

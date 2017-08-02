@@ -12,7 +12,11 @@ class AdtPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AdtPanel(QWidget *parent = 0, Manager *manager = NULL);
+    explicit AdtPanel(QWidget *parent = 0, Manager *manager = NULL, bool load_conf = false);
+
+    void save_config();
+    void load_config();
+    void ask_hameg_settings();
 
 signals:
 
@@ -23,6 +27,10 @@ private slots:
     void handle_rate_changed(int);
     void handle_pmod_changed(int);
     void handle_outp_changed(int);
+    void handle_navg_changed(QString);
+    void handle_vbia_changed(QString);
+    void handle_ibia_changed(QString);
+    void handle_volt_changed(QString);
 
 private:
     Manager *m_manager = NULL;
@@ -56,8 +64,6 @@ private:
 
     QLabel *m_lbl_volt = NULL;
     QLineEdit *m_edit_volt = NULL;
-
-    void ask_hameg_settings();
 };
 
 #endif // ADTPANEL_H

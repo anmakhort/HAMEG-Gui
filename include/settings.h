@@ -18,7 +18,7 @@ class Settings : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Settings(QWidget *parent = 0, Manager *manager = 0);
+    explicit Settings(QWidget *parent = 0, Manager *manager = 0, bool load_config = false);
     ~Settings();
 
 private:
@@ -32,6 +32,10 @@ private:
 
 signals:
     void s_closing(QObject*);
+    void s_saved(bool);
+
+public slots:
+    void handle_save_config(bool);
 
 private slots:
     void handle_apply_pressed();
